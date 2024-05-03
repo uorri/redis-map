@@ -18,101 +18,79 @@ class RedisMapTest : StringSpec({
     }
 
     "Adding and retrieving data from RedisMap should work correctly" {
-        val redisMap = redisCluster.getRedisMap("testMap1")
+        redisMap1["key1"] = "value1"
+        redisMap1["key2"] = "value2"
 
-        redisMap["key1"] = "value1"
-        redisMap["key2"] = "value2"
-
-        redisMap["key1"] shouldBe "value1"
-        redisMap["key2"] shouldBe "value2"
+        redisMap1["key1"] shouldBe "value1"
+        redisMap1["key2"] shouldBe "value2"
     }
 
     "Removing data from RedisMap should work correctly" {
-        val redisMap = redisCluster.getRedisMap("testMap1")
+        redisMap1["key1"] = "value1"
+        redisMap1.remove("key1")
 
-        redisMap["key1"] = "value1"
-        redisMap.remove("key1")
-
-        redisMap.containsKey("key1") shouldBe false
-        redisMap["key1"] shouldBe null
+        redisMap1.containsKey("key1") shouldBe false
+        redisMap1["key1"] shouldBe null
     }
 
     "Size of RedisMap should be correct" {
-        val redisMap = redisCluster.getRedisMap("testMap1")
+        redisMap1["key1"] = "value1"
+        redisMap1["key2"] = "value2"
 
-        redisMap["key1"] = "value1"
-        redisMap["key2"] = "value2"
-
-        redisMap.size shouldBe 2
+        redisMap1.size shouldBe 2
     }
 
     "Getting a non-existent key should return null" {
-        val redisMap = redisCluster.getRedisMap("testMap1")
-
-        redisMap["key1"] shouldBe null
+        redisMap1["key1"] shouldBe null
     }
 
     "Checking for key existence should work correctly" {
-        val redisMap = redisCluster.getRedisMap("testMap1")
+        redisMap1["key1"] = "value1"
 
-        redisMap["key1"] = "value1"
-
-        redisMap.containsKey("key1") shouldBe true
-        redisMap.containsKey("key2") shouldBe false
+        redisMap1.containsKey("key1") shouldBe true
+        redisMap1.containsKey("key2") shouldBe false
     }
 
     "Adding and updating data should work correctly" {
-        val redisMap = redisCluster.getRedisMap("testMap1")
+        redisMap1["key1"] = "value1"
+        redisMap1["key1"] shouldBe "value1"
 
-        redisMap["key1"] = "value1"
-        redisMap["key1"] shouldBe "value1"
-
-        redisMap["key1"] = "updatedValue1"
-        redisMap["key1"] shouldBe "updatedValue1"
+        redisMap1["key1"] = "updatedValue1"
+        redisMap1["key1"] shouldBe "updatedValue1"
     }
 
     "Clearing RedisMap should result in empty map" {
-        val redisMap = redisCluster.getRedisMap("testMap1")
+        redisMap1["key1"] = "value1"
+        redisMap1.clear()
 
-        redisMap["key1"] = "value1"
-        redisMap.clear()
-
-        redisMap.isEmpty() shouldBe true
-        redisMap.size shouldBe 0
+        redisMap1.isEmpty() shouldBe true
+        redisMap1.size shouldBe 0
     }
 
     "RedisMap should be empty initially" {
-        val redisMap = redisCluster.getRedisMap("testMap1")
-
-        redisMap.isEmpty() shouldBe true
-        redisMap.size shouldBe 0
+        redisMap1.isEmpty() shouldBe true
+        redisMap1.size shouldBe 0
     }
 
     "Getting keys, values, and entries should work correctly" {
-        val redisMap = redisCluster.getRedisMap("testMap1")
+        redisMap1["key1"] = "value1"
+        redisMap1["key2"] = "value2"
 
-        redisMap["key1"] = "value1"
-        redisMap["key2"] = "value2"
-
-        redisMap.keys shouldBe setOf("key1", "key2")
-        redisMap.values shouldBe listOf("value1", "value2")
-        redisMap.entries.map { (k, v) -> "$k=$v" } shouldBe setOf("key1=value1", "key2=value2")
+        redisMap1.keys shouldBe setOf("key1", "key2")
+        redisMap1.values shouldBe listOf("value1", "value2")
+        redisMap1.entries.map { (k, v) -> "$k=$v" } shouldBe setOf("key1=value1", "key2=value2")
     }
 
     "Removing a non-existent key should return null" {
-        val redisMap = redisCluster.getRedisMap("testMap1")
-
-        redisMap.remove("key1") shouldBe null
+        redisMap1.remove("key1") shouldBe null
     }
 
     "Adding a large number of data should work correctly" {
-        val redisMap = redisCluster.getRedisMap("testMap1")
-
         repeat(10000) {
-            redisMap["key$it"] = "value$it"
+            redisMap1["key$it"] = "value$it"
         }
 
-        redisMap.size shouldBe 10000
+        redisMap1.size shouldBe 10000
     }
 
     "Both RedisMaps should be independent" {
